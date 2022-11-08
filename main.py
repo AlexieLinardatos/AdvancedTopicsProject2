@@ -39,7 +39,6 @@ model = Sequential()
 model.add(Conv2D(32, (3, 3), input_shape = (32,32,3), activation = 'relu'))
 model.add(MaxPooling2D(pool_size = (2, 2)))
 
-
 model.add(Conv2D(32, (3, 3), activation = 'relu'))
 model.add(MaxPooling2D(pool_size = (2, 2)))
 
@@ -121,9 +120,9 @@ def get_result(result):
 
 
 filename = r'Testing/e/21.png'
-test_image = image.load_img(filename, target_size = (32,32))
+test_image = tf.keras.utils.load_img(filename, target_size = (32,32))
 plt.imshow(test_image)
-test_image = image.img_to_array(test_image)
+test_image = tf.keras.utils.img_to_array(test_image)
 test_image = np.expand_dims(test_image, axis = 0)
 result = model.predict(test_image)
 result = get_result(result)
