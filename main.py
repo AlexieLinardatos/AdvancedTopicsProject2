@@ -54,7 +54,7 @@ model.summary()
 
 model.fit_generator(train_generator,
                          steps_per_epoch = 16,
-                         epochs = 3,
+                         epochs = 10,
                          validation_data = test_generator,
                          validation_steps = 16)
 
