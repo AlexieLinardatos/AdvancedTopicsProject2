@@ -54,7 +54,7 @@ model.summary()
 
 model.fit_generator(train_generator,
                          steps_per_epoch = 16,
-                         epochs = 10,
+                         epochs = 3,
                          validation_data = test_generator,
                          validation_steps = 16)
 
@@ -112,13 +112,6 @@ def get_result(result):
     elif result[0][25] == 1:
         return ('z')
 
-
-# image = tf.keras.preprocessing.image.load_img(image_path)
-# input_arr = tf.keras.preprocessing.image.img_to_array(image)
-# input_arr = np.array([input_arr])  # Convert single image to a batch.
-# predictions = model.predict(input_arr)
-
-
 filename = r'Testing/e/21.png'
 test_image = tf.keras.utils.load_img(filename, target_size = (32,32))
 plt.imshow(test_image)
@@ -128,11 +121,3 @@ result = model.predict(test_image)
 result = get_result(result)
 print ('Predicted Alphabet is: {}'.format(result))
 
-# fileName = r'Testing/e/21.png'
-# image = tf.keras.preprocessing.image.load_img(fileName)
-# plt.imshow(image)
-# input_arr = tf.keras.preprocessing.image.img_to_array(image)
-# input_arr = np.array([input_arr])  # Convert single image to a batch.
-# predictions = model.predict(input_arr)
-# predictions = get_result(predictions)
-# print ('Predicted Alphabet is: {}'.format(predictions))
