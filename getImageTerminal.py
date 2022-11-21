@@ -1,19 +1,61 @@
-
+import cv2
+import os
 import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 #from keras.preprocessing.image.load_img import ImageDataGenerator
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing import image
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Activation
-import os
 import pickle
 import tensorflow as tf
 
+
+def split(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.copyMakeBorder(gray, 8, 8, 8, 8, cv2.BORDER_REPLICATE)
+    thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+    contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours = contours[0]
+
+    letter_image_regions = []
+
+    for contour in contours:
+        (x, y, w, h) = cv2.boundingRect(contour)
+        if (w >= 1 and w <= 256) and (h >= 1 and h <= 256):
+            letter_image_regions.append((x, y, w, h))
+
+    letter_image_regions = sorted(letter_image_regions, key=lambda x: x[0])
+
+    letters = []
+
+    for letter_bounding_box in letter_image_regions:
+        x, y, w, h = letter_bounding_box
+        letter_image = gray[y - 2:y + h + 2, x - 2:x + w + 2]
+        letters.append(letter_image)
+
+    fig, axs = plt.subplots(1,len(letters), figsize=(15,5))
+   
+    i = 0
+
+    for idx, ax in enumerate(axs):
+        ax.set_title(idx)
+        ax.axis('off')
+        ax.imshow(letters[idx], cmap='gray') 
+        status = cv2.imwrite(('SeperatedImages/image%d.png'%(i)),letters[idx]) 
+        print("Image written to file-system : ",status)
+        print(i)  
+        i += 1
+
+
+
+
+
 train_datagen = ImageDataGenerator(rescale = 1./255,
-                                   shear_range = 0.2,
-                                   zoom_range = 0.2,
-                                   horizontal_flip = True)
+                                shear_range = 0.2,
+                                zoom_range = 0.2,
+                                horizontal_flip = True)
 
 test_datagen = ImageDataGenerator(rescale = 1./255)
 
@@ -52,10 +94,10 @@ model.summary()
 
 
 model.fit(train_generator,
-          steps_per_epoch = 20,
-          epochs = 10,
-          validation_data = test_generator,
-          validation_steps = 16)
+        steps_per_epoch = 20,
+        epochs = 60,
+        validation_data = test_generator,
+        validation_steps = 16)
 
 def get_result(result):
     if result[0][0] == 1:
@@ -113,6 +155,19 @@ def get_result(result):
     else:
         return(' ')
 
+
+
+
+fileName = input('Please enter your file name: ')
+print(fileName)
+
+file_name = os.path.basename(fileName)
+print(file_name)
+
+image = cv2.imread(str(file_name))
+split(image) 
+
+
 endResult = ''
 filename = r'SeperatedImages'
 for img in os.listdir(filename):
@@ -126,17 +181,3 @@ for img in os.listdir(filename):
     
 print ('Predicted Alphabet is:')
 print (endResult)
-
-# Save the entire model to a HDF5 file.
-model.save('trainedModel.h5')
-
-
-# #filename = r'Testing/e/21.png'
-# filename = r'SeperatedImages/4.png'
-# test_image = tf.keras.utils.load_img(filename, target_size = (32,32))
-# plt.imshow(test_image)
-# test_image = tf.keras.utils.img_to_array(test_image)
-# test_image = np.expand_dims(test_image, axis = 0)
-# result = model.predict(test_image)
-# result = get_result(result)
-# print ('Predicted Alphabet is: {}'.format(result))

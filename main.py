@@ -120,8 +120,8 @@ def runModel():
 
 
 #image = cv2.imread("image.png")
-#image = cv2.imread("image2.png")
-image = cv2.imread("image6.png")
+image = cv2.imread("image2.png")
+#image = cv2.imread("image6.png")
 #image = cv2.imread('Word/image2.png')
 #split(image) 
 runModel()
