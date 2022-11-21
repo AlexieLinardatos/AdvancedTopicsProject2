@@ -52,11 +52,11 @@ model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = [
 model.summary()
 
 
-model.fit_generator(train_generator,
-                         steps_per_epoch = 16,
-                         epochs = 3,
-                         validation_data = test_generator,
-                         validation_steps = 16)
+model.fit(train_generator,
+          steps_per_epoch = 16,
+          epochs = 10,
+          validation_data = test_generator,
+          validation_steps = 16)
 
 def get_result(result):
     if result[0][0] == 1:
@@ -120,4 +120,3 @@ test_image = np.expand_dims(test_image, axis = 0)
 result = model.predict(test_image)
 result = get_result(result)
 print ('Predicted Alphabet is: {}'.format(result))
-
