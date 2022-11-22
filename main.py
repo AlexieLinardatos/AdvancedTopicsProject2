@@ -120,8 +120,16 @@ def runModel():
 
 
 #image = cv2.imread("image.png")
-image = cv2.imread("image2.png")
-#image = cv2.imread("image6.png")
+#image = cv2.imread("image2.png")
+image = cv2.imread("image6.png")
 #image = cv2.imread('Word/image2.png')
-#split(image) 
+
+fileName = input('Please enter your file name: ')
+print(fileName)
+
+file_name = os.path.basename(fileName)
+#print('Word/'+str(file_name))
+
+image = cv2.imread('Word/'+str(file_name))
+split(image)  
 runModel()
