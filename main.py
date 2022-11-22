@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import os
 import numpy as np
+import shutil
 
 def get_result(result):
 
@@ -64,6 +65,22 @@ def get_result(result):
     elif result[0][25] == highest:
         return ('z')
 
+def runModel():
+    endResult = ''
+    filename = r'SeperatedImages'
+    for img in os.listdir(filename):
+        image = tf.keras.utils.load_img('SeperatedImages/%s'%(img), target_size = (32,32))
+        image = tf.keras.utils.img_to_array(image)
+        image = np.expand_dims(image, axis = 0)
+        probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
+        result = probability_model.predict(image)
+        result = get_result(result)
+        endResult += result
+    
+    print ('Predicted Alphabet is:')
+    print (endResult)
+   
+
 def split(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     gray = cv2.copyMakeBorder(gray, 8, 8, 8, 8, cv2.BORDER_REPLICATE)
@@ -95,37 +112,26 @@ def split(image):
         ax.set_title(idx)
         ax.axis('off')
         ax.imshow(letters[idx], cmap='gray') 
-        status = cv2.imwrite(('SeperatedImages/image%d.png'%(i)),letters[idx]) 
-        #print("Image written to file-system : ",status)
-        #print(i)  
+        cv2.imwrite(('SeperatedImages/image%d.png'%(i)),letters[idx]) 
         i += 1
-    
-def runModel():
-    model = tf.keras.models.load_model('trainedModel.h5')
-    
-    
-    endResult = ''
-    filename = r'SeperatedImages'
-    for img in os.listdir(filename):
-        image = tf.keras.utils.load_img('SeperatedImages/%s'%(img), target_size = (32,32))
-        image = tf.keras.utils.img_to_array(image)
-        image = np.expand_dims(image, axis = 0)
-        probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
-        result = probability_model.predict(image)
-        result = get_result(result)
-        endResult += result
-    
-    print ('Predicted Alphabet is:')
-    print (endResult)
 
 
-#image = cv2.imread("image.png")
-#image = cv2.imread("image2.png")
-image = cv2.imread("image6.png")
-#image = cv2.imread('Word/image2.png')
+model = tf.keras.models.load_model('trainedModel.h5')
+
+folder = r'SeperatedImages'
+for filename in os.listdir(folder):
+    file_path = os.path.join(folder, filename)
+    try:
+        if os.path.isfile(file_path) or os.path.islink(file_path):
+            os.unlink(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+    except Exception as e:
+        print('Failed to delete %s. Reason: %s' % (file_path, e))
+
 
 fileName = input('Please enter your file name: ')
-print(fileName)
+#print(fileName)
 
 file_name = os.path.basename(fileName)
 #print('Word/'+str(file_name))
