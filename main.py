@@ -81,9 +81,12 @@ def runModel():
     print (endResult)
    
 
-def split(image):
+def split(img):
+
+    
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     gray = cv2.copyMakeBorder(gray, 8, 8, 8, 8, cv2.BORDER_REPLICATE)
+    print(gray)
     thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
     contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contours = contours[0]
@@ -107,14 +110,81 @@ def split(image):
     fig, axs = plt.subplots(1,len(letters), figsize=(15,5))
    
     i = 0
+    white = [255,255,255]
 
+    #cv2.imwrite(('SeperatedImages/a.png'),letters[0])
     for idx, ax in enumerate(axs):
         ax.set_title(idx)
         ax.axis('off')
-        ax.imshow(letters[idx], cmap='gray') 
+        ax.imshow(letters[idx], cmap='gray')
+        letters[idx] = cv2.copyMakeBorder(letters[idx], 50, 50, 50, 50,cv2.BORDER_CONSTANT, value= white) 
         cv2.imwrite(('SeperatedImages/image%d.png'%(i)),letters[idx]) 
         i += 1
+    '''
+    edges = cv2.Canny(img,100,200)
+    vertical_sum = np.sum(edges, axis=0)
+    vertical_sum = vertical_sum != 0
+    changes = np.logical_xor(vertical_sum[1:], vertical_sum[:-1])
+    #change_pts = np.nonzero(changes)[0]
 
+    x = []
+    w = []
+
+    widthCounter = 0
+    for i in range(len(changes)):
+        widthCounter += 1
+        if (changes[i] == True):
+            if (len(x) == len(w)):
+                x.append(i - 1)
+                widthCounter = 0
+            else:
+                w.append(widthCounter + x[len(x)-1] + 1)            
+                
+    #print(x)
+    #print(w)
+
+    horizontal_sum = np.sum(edges, axis=1)
+    horizontal_sum = horizontal_sum != 0
+    changes = np.logical_xor(horizontal_sum[1:], horizontal_sum[:-1])
+
+    y = []
+    h = []
+
+    heightCounter = 0
+    for i in range(len(changes)):
+        heightCounter += 1
+        if (changes[i] == True):
+            if (len(y) == len(h)):
+                y.append(i - 1)
+                heightCounter = 0
+            else:
+                h.append(heightCounter + y[len(y)-1] + 1)            
+                
+    #print(y)
+    #print(h)
+    letters = []
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    print(gray)
+
+    for i in range(len(x)):
+        letter_image = []
+        letter_image = gray[y[0]:h[0], x[i]:w[i]]
+        letters.append(letter_image)
+
+    fig, axs = plt.subplots(1,len(letters), figsize=(15,5))
+
+    i = 0
+    white = [255,255,255]
+
+    #cv2.imwrite(('SeperatedImages/a.png'),letters[0])
+    for idx, ax in enumerate(axs):
+        ax.set_title(idx)
+        ax.axis('off')
+        ax.imshow(letters[idx], cmap='gray')
+        letters[idx] = cv2.copyMakeBorder(letters[idx], 50, 50, 50, 50,cv2.BORDER_CONSTANT, value= white) 
+        cv2.imwrite(('SeperatedImages/image%d.png'%(i)),letters[idx]) 
+        i += 1
+    '''
 
 model = tf.keras.models.load_model('trainedModel.h5')
 
