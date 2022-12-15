@@ -27,9 +27,8 @@ evalTrainAcc = []
 numUnits = []
 time = []
 
-# for x in range(1,1000,100):
-#     if(x>=2000):
-#         break
+
+
 start = datetime.now()
 
 train_generator = train_datagen.flow_from_directory(
@@ -43,12 +42,17 @@ class_mode = 'categorical'
 test_generator = test_datagen.flow_from_directory(
 directory = 'Testing',
 target_size = (32,32),
-batch_size = 100,       # try changing this 
+batch_size = 100,       # 200 most optimal? 
 class_mode = 'categorical'
 
 )
 model = Sequential()
+
+
 model.add(Conv2D(32, (3, 3), input_shape = (32,32,3), activation = 'relu'))
+model.add(MaxPooling2D(pool_size = (2, 2), strides =1))
+
+model.add(Conv2D(32, (3, 3), activation = 'relu'))
 model.add(MaxPooling2D(pool_size = (2, 2), strides =1))
 
 model.add(Conv2D(32, (3, 3), activation = 'relu'))
@@ -65,24 +69,26 @@ model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = [
 model.summary()
 
 history = model.fit(train_generator,
-            steps_per_epoch = 500,
+            # steps_per_epoch = 500,
             epochs = 12,
             validation_data = test_generator,
             validation_steps = 16,
             shuffle=True
             )
-    # evalTrainLoss = history.history['accuracy']
-    # test_loss, test_acc = model.evaluate(test_generator, verbose=2) 
-    # evalTestAcc.append(test_acc)
-    # evalTestLoss.append(test_loss)
-    # numUnits.append(x)
-    # time.append(datetime.now() - start)
-    # print(time,x)
-    # model.save('trainedModel.h5')
 
-# print(evalTestAcc,evalTestLoss,numUnits)
-# print(evalTrainLoss)
-# print(time)
+# evalTrainLoss = history.history['accuracy']
+test_loss, test_acc = model.evaluate(test_generator, verbose=2) 
+print(test_loss, test_acc)
+evalTestAcc.append(test_acc)
+evalTestLoss.append(test_loss)
+
+time.append(datetime.now() - start)
+print(time,x)
+model.save('trainedModel.h5')
+
+print(evalTestAcc,evalTestLoss,x)
+print(evalTrainLoss)
+print(time)
 
 # x = numUnits
 # y1 = evalTestAcc 
@@ -92,13 +98,13 @@ history = model.fit(train_generator,
 # axis[0].plot(x,y1,'o')
 # axis[0].set_title("Accuracy")
 
-# y2 = time 
+# y2 = evalTestLoss 
 
 # axis[1].plot(x,y2,'o')
-# axis[1].set_title("Time")
+# axis[1].set_title("Loss")
 
 
-plt.savefig('figure.png')
+# plt.savefig('figure.png')
 
 
 
