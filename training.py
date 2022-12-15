@@ -69,7 +69,7 @@ model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = [
 model.summary()
 
 history = model.fit(train_generator,
-            # steps_per_epoch = 500,
+            steps_per_epoch = 500,
             epochs = 12,
             validation_data = test_generator,
             validation_steps = 16,
@@ -83,10 +83,10 @@ evalTestAcc.append(test_acc)
 evalTestLoss.append(test_loss)
 
 time.append(datetime.now() - start)
-print(time,x)
+print(time)
 model.save('trainedModel.h5')
 
-print(evalTestAcc,evalTestLoss,x)
+print(evalTestAcc,evalTestLoss)
 print(evalTrainLoss)
 print(time)
 
