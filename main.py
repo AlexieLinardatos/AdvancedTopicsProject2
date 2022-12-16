@@ -70,13 +70,13 @@ def get_result(result):
 def runModel():
     endResult = ''
     filename = r'SeperatedImages'
-    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()]) #create probability model based on saved model
+    #probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()]) #create probability model based on saved model
 
     for img in os.listdir(filename):        #go through the directory
         image = tf.keras.utils.load_img('SeperatedImages/%s'%(img), target_size = (32,32)) #resize image to 32,32
         image = tf.keras.utils.img_to_array(image)  #conver to an array
         image = np.expand_dims(image, axis = 0)  #make sure array is proper size
-        result = probability_model.predict(image)   #predict through probability model
+        result = model.predict(image)   #predict through probability model
         result = get_result(result) #get letter correlation with result
         endResult += result     #add to sting
     
@@ -124,12 +124,12 @@ def split(img):
     edges = cv2.Canny(img,100,200)      #using canny to record edges
     vertical_sum = np.sum(edges, axis=0)    
     vertical_sum = vertical_sum != 0    #making sure there are edges
-    changes = np.logical_xor(vertical_sum[1:], vertical_sum[:-1])   #fiding the virtical changes between the images (where one letter ends and the next begins)
+    changes = np.logical_xor(vertical_sum[1:], vertical_sum[:-1])   #fiding the vertical changes between the images (where one letter ends and the next begins)
 
     x = []
     w = []
 
-    #the following loops through the virtical cahnges and records where one letter starts and then stops
+    #the following loops through the vertical cahnges and records where one letter starts and then stops
     widthCounter = 0
     for i in range(len(changes)):
         widthCounter += 1

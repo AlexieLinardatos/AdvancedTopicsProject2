@@ -13,12 +13,9 @@ from datetime import datetime
 train_datagen = ImageDataGenerator(rescale = 1./255,
                                    shear_range = 0.5,
                                    zoom_range = 0.5,
-                                   horizontal_flip = False)  #normally true
+                                   horizontal_flip = False)
 
 test_datagen = ImageDataGenerator(rescale = 1./255)
-
-
-
 
 evalTestLoss = []
 evalTestAcc = []
@@ -27,14 +24,12 @@ evalTrainAcc = []
 numUnits = []
 time = []
 
-
-
 start = datetime.now()
 
 train_generator = train_datagen.flow_from_directory(
 directory = 'Training',
 target_size = (32,32),
-batch_size = 100,    #try changing this
+batch_size = 100, 
 class_mode = 'categorical'
 
 )
@@ -42,7 +37,7 @@ class_mode = 'categorical'
 test_generator = test_datagen.flow_from_directory(
 directory = 'Testing',
 target_size = (32,32),
-batch_size = 100,       # 200 most optimal? 
+batch_size = 100,
 class_mode = 'categorical'
 
 )
@@ -105,19 +100,3 @@ print(time)
 
 
 # plt.savefig('figure.png')
-
-
-
-
-# filename = 'SeperatedImages/image0.png'
-# test_image = tf.keras.utils.load_img(filename, target_size = (32,32))
-# test_image =  tf.keras.utils.img_to_array(test_image)
-# test_image = np.expand_dims(test_image, axis = 0)
-# result = model.predict(test_image)
-# result = get_result(result)
-# print ('Predicted Alphabet is: {}'.format(result))
-
-# Save the entire model to a HDF5 file.
-
-
-
