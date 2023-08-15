@@ -64,8 +64,8 @@ model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = [
 model.summary()
 
 history = model.fit(train_generator,
-            steps_per_epoch = 500,
-            epochs = 12,
+            steps_per_epoch = 200,
+            epochs = 15,
             validation_data = test_generator,
             validation_steps = 16,
             shuffle=True
